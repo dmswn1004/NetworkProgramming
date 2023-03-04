@@ -1,58 +1,53 @@
-
 #include <stdio.h>
 #include <WinSock2.h>
 #define MAX_BUF_SIZE 100
 int main(void)
 {
-	WSADATA		winsockData;
-	int			errorNum, errorCode;
+	WSADATA winsockData;
+	int errorNum, errorCode;
 
-	printf("> Å¬¶óÀÌ¾ğÆ® ½ÇÇà. \n");
+	printf("> í´ë¼ì´ì–¸íŠ¸ ì‹¤í–‰. \n");
 
-	// 1. ¼ÒÄÏ ¶óÀÌºê·¯¸® ÃÊ±âÈ­
+	// 1. ì†Œì¼“ ë¼ì´ë¸ŒëŸ¬ë¦¬ ì´ˆê¸°í™”
 	errorNum = WSAStartup( MAKEWORD(2,2), &winsockData );
 
-	// 2. ¼ÒÄÏ »ı¼º, param  ÇÁ·ÎÅäÄİ ÁöÁ¤, TCP
+	// 2. ì†Œì¼“ ìƒì„±, param  í”„ë¡œí† ì½œ ì§€ì •, TCP
 	SOCKET clientSocket;
 	clientSocket = socket( PF_INET, SOCK_STREAM, IPPROTO_TCP );
 
-	SOCKADDR_IN  serverAddr;
+	SOCKADDR_IN serverAddr;
 	memset(&serverAddr, 0, sizeof(serverAddr));
-	serverAddr.sin_family			= AF_INET;
-	serverAddr.sin_port				= htons(9000);  
-	serverAddr.sin_addr.s_addr		= inet_addr("127.0.0.1");
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(9000);  
+	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-	// ¼­¹ö¿Í ¿¬°áÇÏ±â...
-	errorNum = connect(clientSocket, (SOCKADDR *)&serverAddr, sizeof(serverAddr) );
-	printf("> Å¬¶óÀÌ¾ğÆ®°¡ TCP ¿¬°á ¿äÃ»ÇÏ¿´½À´Ï´Ù.\n");
+	// ì„œë²„ì™€ ì—°ê²°í•˜ê¸°...
+	errorNum = connect(clientSocket, (SOCKADDR *)&serverAddr, sizeof(serverAddr));
+	printf("> í´ë¼ì´ì–¸íŠ¸ê°€ TCP ì—°ê²° ìš”ì²­í•˜ì˜€ìŠµë‹ˆë‹¤.\n");
 
-	// ¿©·¯°³ÀÇ send() ÇÔ¼ö È£ÃâÀ» ÅëÇØ¼­ ¼­¹ö·Î µ¥ÀÌÅÍ Àü¼Û...
-	int  index;
+	// ì—¬ëŸ¬ê°œì˜ send() í•¨ìˆ˜ í˜¸ì¶œì„ í†µí•´ì„œ ì„œë²„ë¡œ ë°ì´í„° ì „ì†¡...
+	int index;
 	char Buffer[MAX_BUF_SIZE];
-	int  returnValue;
+	int returnValue;
 
-	// Àü¼ÛÇÒ µ¥ÀÌÅÍ ÁØºñ...
+	// ì „ì†¡í•  ë°ì´í„° ì¤€ë¹„...
 	for (index = 0; index < MAX_BUF_SIZE; index++) {
 		Buffer[index] = index;
 	}
 
 	for (index = 0; index < 5; index++ ) {
-
 		returnValue = send(clientSocket, Buffer, MAX_BUF_SIZE, 0);
-		if (returnValue == SOCKET_ERROR)
-		{
-			printf("<error> send() ¼öÇà Áß ¿À·ù ¹ß»ı. code(%d)\n", WSAGetLastError());
-		}else if (returnValue > 0) {
-			printf("%d> send() ¸¦ ÅëÇØ %d ¹ÙÀÌÆ® Àü¼Û.\n", index+1, returnValue );
+		if (returnValue == SOCKET_ERROR){
+			printf("<error> send() ìˆ˜í–‰ ì¤‘ ì˜¤ë¥˜ ë°œìƒ. code(%d)\n", WSAGetLastError());
+		} else if (returnValue > 0) {
+			printf("%d> send() ë¥¼ í†µí•´ %d ë°”ì´íŠ¸ ì „ì†¡.\n", index+1, returnValue );
 		}
-
 		Sleep(1000); 
 	}
 
-	// ¼ÒÄÏ Á¾·á
+	// ì†Œì¼“ ì¢…ë£Œ
 	errorNum = closesocket(clientSocket);
 
-	// ¼ÒÄÏ »ç¿ë Á¾·á...
+	// ì†Œì¼“ ì‚¬ìš© ì¢…ë£Œ...
 	errorNum = WSACleanup();
 }
-
