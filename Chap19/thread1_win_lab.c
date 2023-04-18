@@ -19,7 +19,19 @@ int main(int argc, char *argv[])
 						&threadID		
 						);
 
-	Sleep(3000);
+	// Sleep(3000);
+	DWORD ret;
+	ret = WaitForSingleObject(hThread, INFINITE);
+	if (ret == WAIT_FAILED) {
+		printf("<EROR> wait failed.\n");
+		return (-1);
+	}else if(ret == WAIT_TIMEOUT) {
+		printf("<ERROR> timeout error.\n");
+		return -1;
+	}else if(ret == WAIT_OBJECT_0){
+		printf("<SIGNALLED>.\n");
+	}
+	
 	puts("> <main> end of main");
 	return 0;
 }
