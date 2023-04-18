@@ -10,12 +10,12 @@ int main(int argc, char *argv[])
 	int			param = 5;
 
 	hThread =  (HANDLE)	_beginthreadex( 
-							   // ÆÄ¶ó¸ŞÅÍ Ãß°¡
-						NULL,			// º¸¾È °ü·Ã
-						0,				// ½ºÅÃ Å©±â
-						ThreadFunc,		// ÇÔ¼ö ÀÌ¸§
-						(void*)&param,	// ÇÔ¼ö ÆÄ¶÷ ÁÖ¼Ò
-						0,				// ½º·¹µå »ı¼º ÈÄ Áï½Ã ½ÇÇà
+							   // íŒŒë¼ë©”í„° ì¶”ê°€
+						NULL,			// ë³´ì•ˆ ê´€ë ¨
+						0,			// ìŠ¤íƒ í¬ê¸°
+						ThreadFunc,		// í•¨ìˆ˜ ì´ë¦„
+						(void*)&param,		// í•¨ìˆ˜ íŒŒëŒ ì£¼ì†Œ
+						0,			// ìŠ¤ë ˆë“œ ìƒì„± í›„ ì¦‰ì‹œ ì‹¤í–‰
 						&threadID		
 						);
 
@@ -28,7 +28,7 @@ unsigned WINAPI ThreadFunc(void *arg)
 {
 	int i;
 	int cnt;
-	// ½º·¹µå µ¿ÀÛ ÄÚµù.
+	// ìŠ¤ë ˆë“œ ë™ì‘ ì½”ë”©.
 	cnt = *((int*)arg);
 	for (i = 0; i < cnt; i++) {
 		printf("<thread> run %d.\n", i);
