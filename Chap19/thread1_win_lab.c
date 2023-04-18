@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
 	HANDLE		hThread;
 	unsigned	threadID;
-	int			param = 5;
+	int		param = 3;
 
 	hThread =  (HANDLE)	_beginthreadex( 
 							   // 파라메터 추가
