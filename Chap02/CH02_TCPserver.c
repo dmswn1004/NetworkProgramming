@@ -1,16 +1,16 @@
-// ¼­¹ö ÇÁ·Î±×·¥.
+// ì„œë²„ í”„ë¡œê·¸ë¨.
 #include <stdio.h>
 #include <WinSock2.h>
 #define  MAX_BUF_SIZE  1000
 int main(void)
 {
 	WSADATA   winsockData;
-	printf("> ¼­¹ö ÇÁ·Î±×·¥ ½ÇÇà.\n");
+	printf("> ì„œë²„ í”„ë¡œê·¸ë¨ ì‹¤í–‰.\n");
 
-	// 1. ¼ÒÄÏ ÃÊ±âÈ­...¼ÒÄÏ ¶óÀÌºê·¯¸®¸¦ ¿¬°á...
+	// 1. ì†Œì¼“ ì´ˆê¸°í™”...ì†Œì¼“ ë¼ì´ë¸ŒëŸ¬ë¦¬ë¥¼ ì—°ê²°...
 	WSAStartup( MAKEWORD(2,2), &winsockData );
 	
-	// 2. ¼ÒÄÏÀ» »ı¼º ÇÏ±â...
+	// 2. ì†Œì¼“ì„ ìƒì„± í•˜ê¸°...
 	SOCKET serverSocket;
 	serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
@@ -20,52 +20,52 @@ int main(void)
 	serverAddr.sin_port			= htons(9000); 
 	serverAddr.sin_addr.s_addr	= inet_addr("127.0.0.1");
 
-	// 3. bind() ÇÔ¼ö È£Ãâ...
-	// - »ı¼ºµÈ ¼ÒÄÏ IP, port ¼³Á¤...
+	// 3. bind() í•¨ìˆ˜ í˜¸ì¶œ...
+	// - ìƒì„±ëœ ì†Œì¼“ IP, port ì„¤ì •...
 	bind(serverSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr));
 
-	// 4. listen() ÇÔ¼ö È£Ãâ...
-	printf("> listen ÇÔ¼ö¸¦ È£ÃâÇÕ´Ï´Ù.\n");
+	// 4. listen() í•¨ìˆ˜ í˜¸ì¶œ...
+	printf("> listen í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.\n");
 	int backLog = 5; 
 	listen(serverSocket, backLog );
 
-	// 5. accept ÇÔ¼ö È£Ãâ...
+	// 5. accept í•¨ìˆ˜ í˜¸ì¶œ...
 	SOCKET			clientSocket;
 	SOCKADDR_IN		clientAddr;
-	int				addrLen;
+	int			addrLen;
 	addrLen = sizeof(clientAddr);
 
-	printf("> accept ÇÔ¼ö¸¦ È£ÃâÇÏ¿© Å¬¶óÀÌ¾ğÆ® ¿¬°á ¿äÃ»À» ´ë±âÇÕ´Ï´Ù.\n");
+	printf("> accept í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ì—¬ í´ë¼ì´ì–¸íŠ¸ ì—°ê²° ìš”ì²­ì„ ëŒ€ê¸°í•©ë‹ˆë‹¤.\n");
 	clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &addrLen);
 
-	printf("> Å¬¶óÀÌ¾ğÆ®(IP:%s, Port:%d)°¡ ¿¬°áµÇ¾ú½À´Ï´Ù.\n",
+	printf("> í´ë¼ì´ì–¸íŠ¸(IP:%s, Port:%d)ê°€ ì—°ê²°ë˜ì—ˆìŠµë‹ˆë‹¤.\n",
 		inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
 
-	// recv() ÇÔ¼ö¸¦ ÅëÇØ »ó´ë tcp client·ÎºÎÅÍ µ¥ÀÌÅÍ ¼ö½Å
+	// recv() í•¨ìˆ˜ë¥¼ í†µí•´ ìƒëŒ€ tcp clientë¡œë¶€í„° ë°ì´í„° ìˆ˜ì‹ 
 	char Buffer[MAX_BUF_SIZE];
 	int  returnValue, stopFlag=0, index=1;
 	
 	while (stopFlag == 0) 
 	{
 		returnValue = recv(clientSocket, Buffer, MAX_BUF_SIZE, 0);
-		if (returnValue > 0) // ÀÏÁ¤ÇÑ µ¥ÀÌÅÍ¸¦ ¼ö½ÅÇÑ °æ¿ì...
+		if (returnValue > 0) // ì¼ì •í•œ ë°ì´í„°ë¥¼ ìˆ˜ì‹ í•œ ê²½ìš°...
 		{
-			printf("%d> %d ¹ÙÀÌÆ® µ¥ÀÌÅÍ¸¦ ¼ö½Å.\n", index, returnValue);
+			printf("%d> %d ë°”ì´íŠ¸ ë°ì´í„°ë¥¼ ìˆ˜ì‹ .\n", index, returnValue);
 			index++;
 		}else if (returnValue == SOCKET_ERROR) {
-			printf("<error> recv() ÇÔ¼ö ½ÇÇà Áß ¿À·ù ¹ß»ı, code(%d)\n", WSAGetLastError());
+			printf("<error> recv() í•¨ìˆ˜ ì‹¤í–‰ ì¤‘ ì˜¤ë¥˜ ë°œìƒ, code(%d)\n", WSAGetLastError());
 		}else if (returnValue == 0) {
-			// »ó´ë¹æ ¿¬°á Á¾·á...
-			printf("> client°¡ socketÀ» Á¾·á\n");
+			// ìƒëŒ€ë°© ì—°ê²° ì¢…ë£Œ...
+			printf("> clientê°€ socketì„ ì¢…ë£Œ\n");
 			stopFlag = 1;
 		}
 		//Sleep(1000);
 	}
 
-	// ¼ÒÄÏÀ» ÅëÇÑ Åë½Å Á¾·á...
+	// ì†Œì¼“ì„ í†µí•œ í†µì‹  ì¢…ë£Œ...
 	closesocket(serverSocket);
 	
-	// ¼ÒÄÏ »ç¿ë Á¾·á..
+	// ì†Œì¼“ ì‚¬ìš© ì¢…ë£Œ..
 	WSACleanup();
 	return 0;
 }
