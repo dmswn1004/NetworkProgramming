@@ -31,7 +31,7 @@ int main()
 								// htonl( INADDR_ANY );  // Big endian
 	servAdr.sin_port			= htons( 9000 ); // big endian으로 변경해주는 함수 사용
 								// = ntohs(htons(0x123)); 네트워크에서 호스트로 (big endian->little endian)으로 변경
-// 
+
 	// 2. bind() : 서버 소켓에 주소 설정하기
 	if( bind(hServSock, (SOCKADDR*)&servAdr, sizeof(servAdr)) == SOCKET_ERROR )
 		ErrorHandling("bind() error");
