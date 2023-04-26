@@ -11,9 +11,9 @@ int main()
 	WSADATA		wsaData;
 	SOCKET		hServSock, hClntSock;
 	char		message[BUF_SIZE];
-	int			strLen, i=0;
-	SOCKADDR_IN servAdr, clntAdr;
-	int			clntAdrSize, ret;
+	int		strLen, i=0;
+	SOCKADDR_IN 	servAdr, clntAdr;
+	int		clntAdrSize, ret;
 
 	if( WSAStartup(MAKEWORD(2, 2), &wsaData) !=0 )
 		ErrorHandling("WSAStartup() error!"); 
