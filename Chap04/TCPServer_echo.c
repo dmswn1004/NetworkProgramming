@@ -26,7 +26,7 @@ int main()
 	// 주소 설정
 	memset(&servAdr, 0, sizeof(servAdr));
 	servAdr.sin_family			= AF_INET;
-	servAdr.sin_addr.s_addr		= inet_addr("127.0.0.1"); // 32bits 숫자, 네트워크 바이트 순서, Big endian으로 변경해주는 함수 사용
+	servAdr.sin_addr.s_addr			= inet_addr("127.0.0.1"); // 32bits 숫자, 네트워크 바이트 순서, Big endian으로 변경해주는 함수 사용
 								// ntohl(inet_addr("127.0.0.1")); 네트워크에서 호스트로 (big endian->little endian)으로 변경
 								// htonl( INADDR_ANY );  // Big endian
 	servAdr.sin_port			= htons( 9000 ); // big endian으로 변경해주는 함수 사용
