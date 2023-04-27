@@ -12,11 +12,11 @@ int main()
 {
 	WSADATA		wsaData;
 	SOCKET		hServSock, hClntSock;
-	int			i=0;
-	SOCKADDR_IN servAdr, clntAdr;
-	int			clntAdrSize;
-	char	opndCnt;
-	char	data[MAX_PACKET_SIZE];
+	int		i=0;
+	SOCKADDR_IN 	servAdr, clntAdr;
+	int		clntAdrSize;
+	char		opndCnt;
+	char		data[MAX_PACKET_SIZE];
 	int		backlog = 2, ret, flag;
 	int		rcvTarget, rcvSum = 0, result;
 
@@ -29,10 +29,10 @@ int main()
 		ErrorHandling("socket() error");
 	
 	memset(&servAdr, 0, sizeof(servAdr));
-	servAdr.sin_family			= AF_INET;
+	servAdr.sin_family		= AF_INET;
 	servAdr.sin_addr.s_addr		= inet_addr("127.0.0.1"); // big endian.
-									//htonl( INADDR_ANY ); // Big endian
-	servAdr.sin_port			= htons( 9000 );
+								  //htonl( INADDR_ANY ); // Big endian
+	servAdr.sin_port		= htons( 9000 );
 
 	// 2. bind 서버 소켓에 주소 설정하기
 	if( bind(hServSock, (SOCKADDR*)&servAdr, sizeof(servAdr)) == SOCKET_ERROR )
@@ -49,7 +49,7 @@ int main()
 	while (1)
 	{
 		// 4. accept : 클라이언트 연결 설정을 수락.
-		//			   새로운 데이터 전송용 소켓 생성.
+		// 새로운 데이터 전송용 소켓 생성.
 		clntAdrSize = sizeof(clntAdr);
 		
 #if 0
