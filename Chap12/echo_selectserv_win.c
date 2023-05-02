@@ -11,7 +11,7 @@ int main(void)
 	WSADATA			wsaData;
 	SOCKET			hServSock, hClntSock;
 	SOCKADDR_IN		servAdr, clntAdr, clientaddr;
-	int				adrSz, strLen, fdNum, i, flag, addrlen;
+	int			adrSz, strLen, fdNum, i, flag, addrlen;
 	char			buf[BUF_SIZE];
 
 	if(WSAStartup(MAKEWORD(2, 2), &wsaData)!=0)
@@ -20,7 +20,7 @@ int main(void)
 	hServSock = socket(PF_INET, SOCK_STREAM, 0);
 	memset(&servAdr, 0, sizeof(servAdr));
 	servAdr.sin_family		= AF_INET;
-	servAdr.sin_addr.s_addr	= htonl(INADDR_ANY);
+	servAdr.sin_addr.s_addr		= htonl(INADDR_ANY);
 	servAdr.sin_port		= htons(9000);
 	
 	if(bind(hServSock, (SOCKADDR*) &servAdr, sizeof(servAdr))==SOCKET_ERROR)
@@ -31,14 +31,14 @@ int main(void)
 	TIMEVAL		timeout;
 	fd_set		reads, cpyReads;
 
-	FD_ZERO(&reads);			// read Ç×¾Æ¸® ÃÊ±âÈ­
-	FD_SET(hServSock, &reads);	// listen read Ç×¾Æ¸®¿¡ Ãß°¡
+	FD_ZERO(&reads);		// read í•­ì•„ë¦¬ ì´ˆê¸°í™”
+	FD_SET(hServSock, &reads);	// listen read í•­ì•„ë¦¬ì— ì¶”ê°€
 
 	while(1)
 	{
-		cpyReads = reads;	// º¹»çº» »ı¼º... 
-		// reads: ÇöÀç event ´ë±â ¼ÒÄÏµé Á¤º¸
-		// select ÈÄ event°¡ ¹ß»ıÇÏÁö ¾ÊÀº ¼ÒÄÏ 0À¸·Î Ç¥½Ã.
+		cpyReads = reads;	// ë³µì‚¬ë³¸ ìƒì„±... 
+		// reads: í˜„ì¬ event ëŒ€ê¸° ì†Œì¼“ë“¤ ì •ë³´
+		// select í›„ eventê°€ ë°œìƒí•˜ì§€ ì•Šì€ ì†Œì¼“ 0ìœ¼ë¡œ í‘œì‹œ.
 		timeout.tv_sec	= 5;
 		timeout.tv_usec = 5000;
 
@@ -51,22 +51,22 @@ int main(void)
 		}
 
 		if (fdNum == 0) {
-			continue;  // timeout ÀÌ¹Ç·Î select ´Ù½Ã È£Ãâ.
+			continue;  // timeout ì´ë¯€ë¡œ select ë‹¤ì‹œ í˜¸ì¶œ.
 		}
 
-		// ¹ß»ı event Ã³¸® loop
+		// ë°œìƒ event ì²˜ë¦¬ loop
 		for (i = 0; i < reads.fd_count; i++) {
-			// event°¡ ¹ß»ıÇÑ ¼ÒÄÏ¿¡ ´ëÇÑ Ã³¸® ÁøÇà....
+			// eventê°€ ë°œìƒí•œ ì†Œì¼“ì— ëŒ€í•œ ì²˜ë¦¬ ì§„í–‰....
 			if (FD_ISSET(reads.fd_array[i], &cpyReads)) {
-				// reads: event È®ÀÎ ´ë»ó ÀüÃ¼ ¼ÒÄÏÀ» Æ÷ÇÔ
-				// reads¿¡ Æ÷ÇÔµÈ ¼ÒÄÏ¿¡ ´ëÇØ¼­ ÇöÀç event°¡
-				// ¹ß»ıÇß´Â Áö¸¦ È®ÀÎ.
+				// reads: event í™•ì¸ ëŒ€ìƒ ì „ì²´ ì†Œì¼“ì„ í¬í•¨
+				// readsì— í¬í•¨ëœ ì†Œì¼“ì— ëŒ€í•´ì„œ í˜„ì¬ eventê°€
+				// ë°œìƒí–ˆëŠ” ì§€ë¥¼ í™•ì¸.
 
-				// 1. read event°¡ ¹ß»ıÇÑ °æ¿ì.
-				// 1.1 client·ÎºÎÅÍ ¿¬°á ¿äÃ» ¼ö½Å
+				// 1. read eventê°€ ë°œìƒí•œ ê²½ìš°.
+				// 1.1 clientë¡œë¶€í„° ì—°ê²° ìš”ì²­ ìˆ˜ì‹ 
 				if (reads.fd_array[i] == hServSock) {
 
-					printf("Server> client ¿¬°á ´ë±â Áß.\n");
+					printf("Server> client ì—°ê²° ëŒ€ê¸° ì¤‘.\n");
 					adrSz = sizeof(clntAdr);
 					hClntSock = accept(hServSock, (SOCKADDR*)&clntAdr, &adrSz);
 					printf("connected client: Port:%d, IP:%s \n",
@@ -75,7 +75,7 @@ int main(void)
 					FD_SET(hClntSock, &reads);
 				}
 				else {
-					// 1.2 client·ÎºÎÅÍ µ¥ÀÌÅÍ ¼ö½Å.
+					// 1.2 clientë¡œë¶€í„° ë°ì´í„° ìˆ˜ì‹ .
 					strLen = recv(reads.fd_array[i], buf, BUF_SIZE - 1, 0);
 					if (strLen <= 0)    // close request!
 					{
@@ -85,7 +85,7 @@ int main(void)
 					}
 					else
 					{
-						// Å¬¶óÀÌ¾ğÆ® Á¤º¸ ¾ò±â						
+						// í´ë¼ì´ì–¸íŠ¸ ì •ë³´ ì–»ê¸°						
 						addrlen = sizeof(clientaddr);
 						getpeername(reads.fd_array[i], (SOCKADDR*)&clientaddr, &addrlen);
 
