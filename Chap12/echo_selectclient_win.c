@@ -1,7 +1,7 @@
 #include <winsock2.h>
 #include <stdio.h>
 
-#define	BUF_SIZE	512
+#define	BUF_SIZE 512
 
 void ErrorDisplay(const char *str)
 {
@@ -9,7 +9,7 @@ void ErrorDisplay(const char *str)
 	exit(-1);
 }
  
-// »ç¿ëÀÚ Á¤ÀÇ µ¥ÀÌÅÍ ¼ö½Å ÇÔ¼ö
+// ì‚¬ìš©ì ì •ì˜ ë°ì´í„° ìˆ˜ì‹  í•¨ìˆ˜
 int recvn( SOCKET s, char *buf, int len, int flags )
 {
 	int 		received;
@@ -33,13 +33,13 @@ int recvn( SOCKET s, char *buf, int len, int flags )
 
 int main( int argc, char* argv[] )
 {
-int		retval;
+	int retval;
 
 	WSADATA	wsa;
 	retval = WSAStartup(  MAKEWORD(2, 2), &wsa );
 	if( retval != 0 )	return -1;
 
-	// ¼ÒÄÏ ÇÏ³ª ¸¸µé±â...
+	// ì†Œì¼“ í•˜ë‚˜ ë§Œë“¤ê¸°...
 	SOCKET	ClientSocket;
 	ClientSocket = socket( AF_INET, SOCK_STREAM, 0 );
 	if( ClientSocket == INVALID_SOCKET )
@@ -47,12 +47,12 @@ int		retval;
 		ErrorDisplay("socket() error(INVALID_SOCKET)");
 	}
 	 
-	// connect() ÇÔ¼ö¸¦ ÀÌ¿ëÇØ¼­ ¼­¹ö¿¡ Á¢¼Ó ½Ãµµ...
+	// connect() í•¨ìˆ˜ë¥¼ ì´ìš©í•´ì„œ ì„œë²„ì— ì ‘ì† ì‹œë„...
 	SOCKADDR_IN	ServerAddr;
 	ZeroMemory( &ServerAddr, sizeof(ServerAddr)  );
 	ServerAddr.sin_family			= AF_INET;
-	ServerAddr.sin_port				= htons(9000);				// ¼­¹ö Æ÷Æ® ¹øÈ£...
-	ServerAddr.sin_addr.s_addr		= inet_addr("127.0.0.1");	// ¼­¹ö IP ÁÖ¼Ò...
+	ServerAddr.sin_port			= htons(9000);			// ì„œë²„ í¬íŠ¸ ë²ˆí˜¸...
+	ServerAddr.sin_addr.s_addr		= inet_addr("127.0.0.1");	// ì„œë²„ IP ì£¼ì†Œ...
 	
 	retval = connect( ClientSocket, (SOCKADDR *)&ServerAddr, sizeof(ServerAddr) );
 	if( retval == SOCKET_ERROR )
@@ -60,17 +60,17 @@ int		retval;
 		ErrorDisplay("connect() error(SOCKET_ERROR)");
 	}
 
-	// µ¥ÀÌÅ¸¸¦ ¼Û, ¼ö½ÅÇÏ±â...
+	// ë°ì´íƒ€ë¥¼ ì†¡, ìˆ˜ì‹ í•˜ê¸°...
 	char		Buf[BUF_SIZE+1];
 	//int		iLen;
 
 	while( 1 )
 	{
-		// µ¥ÀÌÅ¸¸¦ ÀÔ·ÂÇÏ°í, ±× µ¥ÀÌÅ¸¸¦ ¼­¹ö¿¡ Àü¼ÛÇÏ±â...
-		// ¹öÆÛ Ã»¼Ò...
+		// ë°ì´íƒ€ë¥¼ ì…ë ¥í•˜ê³ , ê·¸ ë°ì´íƒ€ë¥¼ ì„œë²„ì— ì „ì†¡í•˜ê¸°...
+		// ë²„í¼ ì²­ì†Œ...
 		ZeroMemory( Buf, sizeof(Buf) );
-		// »ç¿ëÀÚ·ÎºÎÅÍ µ¥ÀÌÅ¸ ÀÔ·Â...
-		printf("\n[º¸³¾ µ¥ÀÌÅ¸] ");
+		// ì‚¬ìš©ìë¡œë¶€í„° ë°ì´íƒ€ ì…ë ¥...
+		printf("\n[ë³´ë‚¼ ë°ì´íƒ€] ");
 		if( fgets( Buf, BUF_SIZE+1, stdin ) == NULL )	break;
 		
 		retval = send( ClientSocket, Buf, strlen(Buf), 0 );
@@ -79,9 +79,9 @@ int		retval;
 			printf("<ERROR> send()(SOCKET_ERROR)!!!\n");
 			break;
 		}
-		printf("[TCP Å¬¶óÀÌ¾ğÆ®] %d ¹ÙÀÌÆ®¸¦ º¸³Â½À´Ï´Ù.\n", retval);
+		printf("[TCP í´ë¼ì´ì–¸íŠ¸] %d ë°”ì´íŠ¸ë¥¼ ë³´ëƒˆìŠµë‹ˆë‹¤.\n", retval);
 
-		// ¼­¹ö·ÎºÎÅÍ µ¥ÀÌÅ¸¸¦ ¼ö½ÅÇÏ±â...
+		// ì„œë²„ë¡œë¶€í„° ë°ì´íƒ€ë¥¼ ìˆ˜ì‹ í•˜ê¸°...
 		retval = recvn( ClientSocket, Buf, retval, 0 );
 		if( retval == SOCKET_ERROR )
 		{
@@ -89,16 +89,16 @@ int		retval;
 			break;
 		}else if( retval == 0 )	break;
 
-		// ¹ŞÀº µ¥ÀÌÅ¸¸¦ Ãâ·ÂÇÏ±â...
+		// ë°›ì€ ë°ì´íƒ€ë¥¼ ì¶œë ¥í•˜ê¸°...
 		Buf[retval]= '\0';
-		printf("[TCP Å¬¶óÀÌ¾ğÆ®] %d ¹ÙÀÌÆ®¸¦ ¹Ş¾Ò½À´Ï´Ù.\n", retval);
-		printf("[¹ŞÀº µ¥ÀÌÅ¸] %s \n", Buf);
+		printf("[TCP í´ë¼ì´ì–¸íŠ¸] %d ë°”ì´íŠ¸ë¥¼ ë°›ì•˜ìŠµë‹ˆë‹¤.\n", retval);
+		printf("[ë°›ì€ ë°ì´íƒ€] %s \n", Buf);
 	}
 
-	// ¼ÒÄÏ close...
+	// ì†Œì¼“ close...
 	closesocket( ClientSocket );
 	
-	// À©¼Ó DLL: close()
+	// ìœˆì† DLL: close()
 	WSACleanup();
 
 	return 0;
