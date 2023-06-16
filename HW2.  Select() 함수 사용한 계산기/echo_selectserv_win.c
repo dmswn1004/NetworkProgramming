@@ -4,7 +4,6 @@
 #include <winsock2.h>
 
 #define BUF_SIZE 100
-int calculate(int opndCnt, int data[], char* op);
 void ErrorHandling(char *message);
 
 int main(void)
@@ -40,7 +39,7 @@ int main(void)
 		cpyReads = reads;
 		timeout.tv_sec = 5;
 		timeout.tv_usec = 5000;
-		// 1. select( , cpyReads, ) // ¿©·¯°³ ¼ÒÄÏ ´ë»ó event È®ÀÎ
+		// 1. select( , cpyReads, ) // ì—¬ëŸ¬ê°œ ì†Œì¼“ ëŒ€ìƒ event í™•ì¸
 		fdNum = select(0, &cpyReads, 0, 0, &timeout);
 		if (fdNum == SOCKET_ERROR) {
 			printf("<ERROR> select socket error.\n");
@@ -49,17 +48,20 @@ int main(void)
 			continue;
 		}
 
-		// 2. ¿©·¯ ¼ÒÄÏ ´ë»ó È®ÀÎµÈ event Ã³¸®
-		// for(µî·ÏµÈ ¸ğµç ¼ÒÄÏ¿¡ ´ëÇØ¼­ loop)
-		//  --- event È®ÀÎ... ¸ğµç ¼ÒÄÏ ´ë»ó FD_ISSET(i, cpyReads)
-		//     -- read Event °æ¿ì, Ã³¸®(data recv, cnt req Ã³¸®)
+		// 2. ì—¬ëŸ¬ ì†Œì¼“ ëŒ€ìƒ í™•ì¸ëœ event ì²˜ë¦¬
+		// for(ë“±ë¡ëœ ëª¨ë“  ì†Œì¼“ì— ëŒ€í•´ì„œ loop)
+		//  --- event í™•ì¸... ëª¨ë“  ì†Œì¼“ ëŒ€ìƒ FD_ISSET(i, cpyReads)
+		//     -- read Event ê²½ìš°, ì²˜ë¦¬(data recv, cnt req ì²˜ë¦¬)
 		for (i = 0; i < reads.fd_count; i++) {
+
 			if (FD_ISSET(reads.fd_array[i], &cpyReads)) {
+				// í•´ë‹¹ ì†Œì¼“ì— read event ë°œìƒ....
 				if (reads.fd_array[i] == hServSock) {
+					// ì„œë²„ ì†Œì¼“ì€ con. req. ë§Œ ìˆ˜ì‹ ...-> accept ì‹¤í–‰.
 					adrSz = sizeof(clntAdr);
 					hClntSock = accept(hServSock, (SOCKADDR*)&clntAdr, &adrSz);
-					printf("connected client: Port:%d, IP:%s \n",
-						clntAdr.sin_port, inet_ntoa(clntAdr.sin_addr));
+					// printf("connected client: Port:%d, IP:%s \n", clntAdr.sin_port, inet_ntoa(clntAdr.sin_addr));
+					printf("connected new client...\n");
 
 					FD_SET(hClntSock, &reads);
 				}
@@ -68,52 +70,27 @@ int main(void)
 					if (strLen <= 0)    // close request!
 					{
 						closesocket(reads.fd_array[i]);
-						printf("closed client: %d, StrLen:%d \n", hClntSock, strLen);
+						// printf("closed client: %d, StrLen:%d \n", hClntSock, strLen);
 						
 						FD_CLR(reads.fd_array[i], &reads);
 					}
 					else
 					{
-						// Å¬¶óÀÌ¾ğÆ® Á¤º¸ ¾ò±â						
+						// í´ë¼ì´ì–¸íŠ¸ ì •ë³´ ì–»ê¸°						
 						addrlen = sizeof(clientaddr);
 						getpeername(reads.fd_array[i], (SOCKADDR*)&clientaddr, &addrlen);
 
 						buf[strLen] = '\0';
-						printf("(Port:%d, IP:%s),Msg : %s \n",
-							clientaddr.sin_port, inet_ntoa(clientaddr.sin_addr), buf);
+						// printf("(Port:%d, IP:%s) \n", clientaddr.sin_port, inet_ntoa(clientaddr.sin_addr));
 
-						int ret, rcvSum, rcvTotal, result;
-						char opndCnt;
-						flag = 1;
+						int opndCnt = buf[0];
+						int* data = (int*)&buf[1];
+						char op = buf[1 + opndCnt * sizeof(int)];
 						
-						while (flag)
-						{
-							printf("Server> °è»ê ¿äÃ» ´ë±â.\n");
-
-							// 1. ÆĞÅ¶ size °¡ ´ã±ä 1 ¹ÙÀÌÆ® ¼ö½Å...
-							ret = recv(hClntSock, &opndCnt, 1, 0);
-
-							rcvSum = 0;
-							rcvTotal = (int)opndCnt * sizeof(int) + 1;
-							while (rcvSum < rcvTotal) {
-								ret = recv(hClntSock, (char*)&buf[rcvSum], rcvTotal - rcvSum, 0);
-								if (ret <= 0) {
-									flag = 0;
-									break;
-								}
-								else {
-									rcvSum += ret;
-									printf("Server> recv %d bytes(rcvSum = %d bytes).\n", ret, rcvSum);
-								}
-							}
-
-							if (flag == 1) {
-								result = calculate((int)opndCnt, (int*)buf, buf[rcvTotal - 1]);
-								printf("Server> °è»ê °á°ú(%d) client·Î Àü¼Û.\n", result);
-								send(hClntSock, (char*)&result, sizeof(result), 0);
-							}
-
-						send(hClntSock, buf, strLen, 0);    // echo!
+						printf("Server> recv %d bytes(rcvSum = %d bytes).\n", 1 + opndCnt * sizeof(int), 1 + opndCnt * sizeof(int));
+						int result = calculate(opndCnt, data, op);
+						printf("Server> ê³„ì‚° ê²°ê³¼(%d) clientë¡œ ì „ì†¡.\n", result);
+						send(reads.fd_array[i], (char*)&result, sizeof(result), 0); // echo!
 					}
 				}
 			}
@@ -124,7 +101,7 @@ int main(void)
 	return 0;
 }
 
-int calculate(int opndCnt, int data[], char* op)
+int calculate(int opndCnt, int data[], char op)
 {
 	int result = data[0];
 	switch (op) {
