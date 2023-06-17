@@ -60,7 +60,6 @@ int main(void)
 					// 서버 소켓은 con. req. 만 수신...-> accept 실행.
 					adrSz = sizeof(clntAdr);
 					hClntSock = accept(hServSock, (SOCKADDR*)&clntAdr, &adrSz);
-					// printf("connected client: Port:%d, IP:%s \n", clntAdr.sin_port, inet_ntoa(clntAdr.sin_addr));
 					printf("connected new client...\n");
 
 					FD_SET(hClntSock, &reads);
@@ -70,7 +69,6 @@ int main(void)
 					if (strLen <= 0)    // close request!
 					{
 						closesocket(reads.fd_array[i]);
-						// printf("closed client: %d, StrLen:%d \n", hClntSock, strLen);
 						
 						FD_CLR(reads.fd_array[i], &reads);
 					}
@@ -81,8 +79,7 @@ int main(void)
 						getpeername(reads.fd_array[i], (SOCKADDR*)&clientaddr, &addrlen);
 
 						buf[strLen] = '\0';
-						// printf("(Port:%d, IP:%s) \n", clientaddr.sin_port, inet_ntoa(clientaddr.sin_addr));
-
+						
 						int opndCnt = buf[0];
 						int* data = (int*)&buf[1];
 						char op = buf[1 + opndCnt * sizeof(int)];
